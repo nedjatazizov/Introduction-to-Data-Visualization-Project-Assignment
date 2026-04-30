@@ -4,28 +4,46 @@ Bu proje, restoran menülerindeki yemekleri kullanıcının sağlık profiline g
 
 ## About
 
-Projemizin genel yapısı şu şekildedir: Kullanıcı restoran menüsündeki metni seçer ve ardından F8 tuşuna basar. Sistem seçilen/kopyalanan menüyü analiz ederek kullanıcının sağlık profiline göre hangi yemeklerin uygun, dikkatli tüketilmesi gereken veya önerilmez olduğunu listeler.
+Projemizin genel yapısı şu şekildedir: Kullanıcı restoran menüsündeki yemek listesini seçer, kopyalar ve ardından uygulama açıkken F8 tuşuna basar. Sistem seçilen menüyü analiz ederek kullanıcının sağlık profiline göre hangi yemeklerin uygun, dikkatli tüketilmesi gereken veya önerilmez olduğunu listeler.
+
+## Projenin Amacı
+
+Bu projenin amacı; diyabet, tansiyon ve diyet gibi farklı sağlık profillerine sahip kullanıcıların restoranlarda daha bilinçli yemek seçimi yapmasına yardımcı olmaktır.
+
+## Kullanılan Teknolojiler
+
+- Python
+- Tkinter
+- ttk
+- Counter
+- Canvas grafik yapısı
 
 ## Özellikler
 
-- Diyabet, tansiyon ve diyet profili seçimi
+- Sağlık profili seçimi
 - Restoran menüsü analizi
-- Uygun / dikkatli / önerilmez sınıflandırması
+- Uygun / Dikkatli / Önerilmez sınıflandırması
 - F8 tuşu ile hızlı analiz
-- Masaüstü arayüz
+- Grafiksel menü risk dağılımı
+- Genel öneri metni
+- Masaüstü kullanıcı arayüzü
+
+## Desteklenen Profiller
+
+- Diyabet
+- Tansiyon
+- Diyet
 
 ## Kullanım
 
-1. Python kurulur.
-2. `main.pyw` dosyası çalıştırılır.
-3. Menü girilir veya bir menü metni kopyalanır.
-4. F8 tuşuna basılır.
-5. Sonuçlar ekranda görüntülenir.
+1. `main.pyw` dosyası çalıştırılır.
+2. Sağlık profili seçilir.
+3. Menü metni kutuya yazılır veya başka bir yerden kopyalanır.
+4. `Analiz Et` butonuna basılır.
+5. Alternatif olarak menü metni kopyalandıktan sonra F8 tuşuna basılarak analiz yapılabilir.
+6. Sonuçlar tablo, grafik ve açıklama olarak görüntülenir.
 
 ## Örnek Menü
 
-Izgara Tavuk, Pilav, Baklava, Ayran, Kola, Salata, Mercimek Çorbası
-
-## Not
-
-Bu proje eğitim amaçlıdır. Tıbbi tavsiye yerine geçmez.
+```text
+Izgara Tavuk, Pilav, Baklava, Ayran, Kola, Salata, Mercimek Çorbası, Patates Kızartması, Balık, Yoğurt
