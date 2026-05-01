@@ -1,17 +1,31 @@
 @echo off
-setlocal
-cd /d "%~dp0"
+title Akilli Restoran Menu AI Sistemi
 
-if not exist ".venv\Scripts\pythonw.exe" (
-    echo [INFO] Sanal ortam bulunamadi. Ilk kurulum baslatiliyor...
-    call "%~dp0kurulum.bat"
-    if not %errorlevel%==0 (
-        echo [HATA] Kurulum basarisiz. Program baslatilamadi.
-        pause
-        exit /b 1
-    )
+echo Sistem baslatiliyor...
+
+:: Python kontrol
+where python >nul 2>nul
+if errorlevel 1 (
+    echo Python bulunamadi!
+    pause
+    exit
 )
 
-call ".venv\Scripts\activate.bat"
-start "AI Asistan" /B ".venv\Scripts\pythonw.exe" "%~dp0main.pyw"
-exit /b 0
+:: requests kontrol
+python -m pip show requests >nul 2>nul
+if errorlevel 1 (
+    echo requests yukleniyor...
+    python -m pip install requests
+)
+
+:: Ollama kontrol
+where ollama >nul 2>nul
+if errorlevel 1 (
+    echo Ollama kurulu degil!
+    echo https://ollama.com/download adresinden indir.
+    pause
+)
+
+echo Program baslatiliyor...
+start "" pythonw main.pyw
+exit
