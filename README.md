@@ -65,7 +65,6 @@ Kullanılan model:
 ```bash
 llama3.2:1b
 
-## Proje Özelliklerinin Gelişmiş Seviyesi
 
 Bu proje, klasik veri görselleştirme projelerinden farklı olarak:
 
