@@ -1,78 +1,73 @@
-# Akıllı Restoran Menü Öneri Sistemi
+# 🍽️ Akıllı Restoran Menü Öneri Sistemi (AI Destekli)
 
-Bu proje, restoran menülerindeki yemekleri kullanıcının sağlık profiline göre analiz eden, Python ve Ollama destekli bir masaüstü uygulamasıdır.
+Bu proje, restoran menülerini kullanıcıların sağlık durumuna göre analiz eden, grafiksel çıktı üreten ve Ollama üzerinden yerel yapay zekâ ile yorum sağlayan gelişmiş bir masaüstü uygulamasıdır.
 
-## About
+---
 
-Projemizin genel yapısı şu şekildedir: Kullanıcı restoran menüsündeki yemek listesini seçer, kopyalar ve ardından uygulama açıkken F8 tuşuna basar. Sistem seçilen menüyü analiz ederek kullanıcının sağlık profiline göre hangi yemeklerin uygun, dikkatli tüketilmesi gereken veya önerilmez olduğunu listeler.
+## 📌 About
 
-Bu proje, kural tabanlı analiz ile Ollama yapay zekâ yorumunu birleştirerek daha kapsamlı bir menü değerlendirme sistemi sunar.
+Projemizin genel yapısı şu şekildedir:
 
-## Projenin Amacı
+Kullanıcı herhangi bir restoran menüsünü seçer ve kopyalar.  
+Ardından uygulama açıkken **F8 tuşuna basarak** menüyü otomatik olarak sisteme aktarır.  
 
-Bu projenin amacı; diyabet, tansiyon ve diyet gibi farklı sağlık profillerine sahip kullanıcıların restoranlarda daha bilinçli yemek seçimi yapmasına yardımcı olmaktır.
+Sistem:
 
-Uygulama, restoran menüsündeki yemekleri analiz eder ve kullanıcının seçtiği sağlık profiline göre öneriler üretir.
+- Menü verisini analiz eder  
+- Sağlık profiline göre sınıflandırır  
+- Grafiksel sonuç üretir  
+- Yapay zekâ ile yorum oluşturur  
 
-## Kullanılan Teknolojiler
+---
+
+## 🎯 Projenin Amacı
+
+Bu projenin amacı:
+
+- Kullanıcıların restoranlarda daha bilinçli seçim yapmasını sağlamak  
+- Sağlık durumuna göre yemek önerisi sunmak  
+- Veri analizi ve yapay zekâyı bir araya getirmek  
+
+---
+
+## 🧠 Kullanılan Teknolojiler
 
 - Python
-- Tkinter
-- ttk
-- Canvas
-- Counter
-- Requests
-- Ollama
-- Llama 3.2 1B modeli
+- Tkinter (GUI)
+- Canvas (Grafik)
+- Requests (API)
+- Ollama (Local AI)
+- Llama 3.2 1B Model
 
-## Temel Özellikler
+---
 
-- Sağlık profili seçimi
-- Restoran menüsü analizi
-- Uygun / Dikkatli / Önerilmez sınıflandırması
-- F8 tuşu ile hızlı analiz
-- Grafiksel menü risk dağılımı
-- Ollama ile yapay zekâ destekli yorum
-- Masaüstü kullanıcı arayüzü
-- Örnek menü ve temizleme butonları
+## ⚙️ Sistem Mimarisi
 
-## Desteklenen Sağlık Profilleri
+Uygulama 2 ana analiz katmanından oluşur:
 
-- Diyabet
-- Tansiyon
-- Diyet
+### 1️⃣ Kural Tabanlı Analiz
 
-## Sistem Nasıl Çalışır?
+Menüdeki yemekler, önceden belirlenen sağlık kurallarına göre analiz edilir.
 
-Uygulama iki farklı analiz yöntemi kullanır.
+Örnek:
 
-### 1. Kural Tabanlı Analiz
+- Diyabet → şekerli ve karbonhidratlı yiyecekler riskli
+- Tansiyon → tuzlu ve işlenmiş gıdalar riskli
+- Diyet → yüksek kalorili yiyecekler riskli
 
-Program, menüdeki yemekleri önceden belirlenen anahtar kelimelerle karşılaştırır. Örneğin diyabet profili için tatlı, kola, pilav ve yüksek karbonhidratlı yiyecekler riskli olarak sınıflandırılır.
-
-Yemekler üç gruba ayrılır:
+Sonuçlar:
 
 - UYGUN
 - DİKKATLİ
 - ÖNERİLMEZ
 
-### 2. Ollama AI Analizi
+---
 
-Menü metni ve seçilen sağlık profili Ollama API üzerinden yerel yapay zekâ modeline gönderilir. Model, menüyü yorumlar ve kullanıcıya Türkçe açıklamalı öneri üretir.
+### 2️⃣ Yapay Zekâ Analizi (Ollama)
 
-Kullanılan model:
+Menü metni Ollama API üzerinden yerel modele gönderilir.
+
+Model:
 
 ```bash
 llama3.2:1b
-
-
-Bu proje, klasik veri görselleştirme projelerinden farklı olarak:
-
-- Gerçek zamanlı kullanıcı etkileşimi sağlar
-- F8 ile metin yakalama (event-driven sistem)
-- Kural tabanlı veri analizi
-- Grafiksel veri görselleştirme (Canvas)
-- Ollama ile yerel yapay zekâ entegrasyonu
-- Çok katmanlı analiz (rule-based + AI-based)
-
-Bu yönüyle proje, hem veri analizi hem de yapay zekâ entegrasyonunu birleştiren hibrit bir sistemdir.
