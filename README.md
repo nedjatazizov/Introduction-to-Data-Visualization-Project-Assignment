@@ -1,49 +1,66 @@
 # Akıllı Restoran Menü Öneri Sistemi
 
-Bu proje, restoran menülerindeki yemekleri kullanıcının sağlık profiline göre analiz eden Python tabanlı bir masaüstü uygulamasıdır.
+Bu proje, restoran menülerindeki yemekleri kullanıcının sağlık profiline göre analiz eden, Python ve Ollama destekli bir masaüstü uygulamasıdır.
 
 ## About
 
 Projemizin genel yapısı şu şekildedir: Kullanıcı restoran menüsündeki yemek listesini seçer, kopyalar ve ardından uygulama açıkken F8 tuşuna basar. Sistem seçilen menüyü analiz ederek kullanıcının sağlık profiline göre hangi yemeklerin uygun, dikkatli tüketilmesi gereken veya önerilmez olduğunu listeler.
 
+Bu proje, kural tabanlı analiz ile Ollama yapay zekâ yorumunu birleştirerek daha kapsamlı bir menü değerlendirme sistemi sunar.
+
 ## Projenin Amacı
 
 Bu projenin amacı; diyabet, tansiyon ve diyet gibi farklı sağlık profillerine sahip kullanıcıların restoranlarda daha bilinçli yemek seçimi yapmasına yardımcı olmaktır.
+
+Uygulama, restoran menüsündeki yemekleri analiz eder ve kullanıcının seçtiği sağlık profiline göre öneriler üretir.
 
 ## Kullanılan Teknolojiler
 
 - Python
 - Tkinter
 - ttk
+- Canvas
 - Counter
-- Canvas grafik yapısı
+- Requests
+- Ollama
+- Llama 3.2 1B modeli
 
-## Özellikler
+## Temel Özellikler
 
 - Sağlık profili seçimi
 - Restoran menüsü analizi
 - Uygun / Dikkatli / Önerilmez sınıflandırması
 - F8 tuşu ile hızlı analiz
 - Grafiksel menü risk dağılımı
-- Genel öneri metni
+- Ollama ile yapay zekâ destekli yorum
 - Masaüstü kullanıcı arayüzü
+- Örnek menü ve temizleme butonları
 
-## Desteklenen Profiller
+## Desteklenen Sağlık Profilleri
 
 - Diyabet
 - Tansiyon
 - Diyet
 
-## Kullanım
+## Sistem Nasıl Çalışır?
 
-1. `main.pyw` dosyası çalıştırılır.
-2. Sağlık profili seçilir.
-3. Menü metni kutuya yazılır veya başka bir yerden kopyalanır.
-4. `Analiz Et` butonuna basılır.
-5. Alternatif olarak menü metni kopyalandıktan sonra F8 tuşuna basılarak analiz yapılabilir.
-6. Sonuçlar tablo, grafik ve açıklama olarak görüntülenir.
+Uygulama iki farklı analiz yöntemi kullanır.
 
-## Örnek Menü
+### 1. Kural Tabanlı Analiz
 
-```text
-Izgara Tavuk, Pilav, Baklava, Ayran, Kola, Salata, Mercimek Çorbası, Patates Kızartması, Balık, Yoğurt
+Program, menüdeki yemekleri önceden belirlenen anahtar kelimelerle karşılaştırır. Örneğin diyabet profili için tatlı, kola, pilav ve yüksek karbonhidratlı yiyecekler riskli olarak sınıflandırılır.
+
+Yemekler üç gruba ayrılır:
+
+- UYGUN
+- DİKKATLİ
+- ÖNERİLMEZ
+
+### 2. Ollama AI Analizi
+
+Menü metni ve seçilen sağlık profili Ollama API üzerinden yerel yapay zekâ modeline gönderilir. Model, menüyü yorumlar ve kullanıcıya Türkçe açıklamalı öneri üretir.
+
+Kullanılan model:
+
+```bash
+llama3.2:1b
