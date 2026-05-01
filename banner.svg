@@ -1,0 +1,11 @@
+<svg width="1200" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="300" fill="#1e1e1e"/>
+  <text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
+        font-size="40" fill="#00ffcc" font-family="Arial">
+    Akıllı Restoran Menü Öneri Sistemi
+  </text>
+  <text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle"
+        font-size="20" fill="#ffffff" font-family="Arial">
+    AI + Veri Analizi + Sağlık Odaklı Karar Sistemi
+  </text>
+</svg>
