@@ -1,20 +1,24 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from collections import Counter
+import requests
+import threading
 
 APP_TITLE = "Akıllı Restoran Menü Öneri Sistemi"
+OLLAMA_URL = "http://localhost:11434/api/generate"
+OLLAMA_MODEL = "llama3.2:1b"
 
 RULES = {
     "diyabet": {
-        "bad": ["baklava", "kola", "tatlı", "pasta", "şeker", "pilav", "makarna", "patates", "pizza"],
+        "bad": ["baklava", "kola", "tatlı", "pasta", "şeker", "pilav", "makarna", "patates", "pizza", "hamburger"],
         "good": ["ızgara tavuk", "salata", "ayran", "yoğurt", "balık", "sebze", "çorba"]
     },
     "tansiyon": {
-        "bad": ["turşu", "sucuk", "salam", "sosis", "cips", "kola", "burger"],
-        "good": ["salata", "ızgara tavuk", "balık", "sebze", "yoğurt"]
+        "bad": ["turşu", "sucuk", "salam", "sosis", "cips", "kola", "burger", "fast food"],
+        "good": ["salata", "ızgara tavuk", "balık", "sebze", "yoğurt", "ayran"]
     },
     "diyet": {
-        "bad": ["baklava", "tatlı", "pasta", "kola", "patates", "hamburger", "pizza"],
+        "bad": ["baklava", "tatlı", "pasta", "kola", "patates", "hamburger", "pizza", "kızartma"],
         "good": ["salata", "ızgara tavuk", "balık", "yoğurt", "sebze", "çorba"]
     }
 }
@@ -37,12 +41,41 @@ def analyze_item(item, profile):
 
     return "DİKKATLİ"
 
+def ask_ollama(menu, profile):
+    prompt = f"""
+Sen sağlık odaklı bir restoran menüsü analiz asistanısın.
+
+Kullanıcı profili: {profile}
+
+Restoran menüsü:
+{menu}
+
+Görevin:
+1. Menüdeki yemekleri sağlık profiline göre analiz et.
+2. UYGUN, DİKKATLİ ve ÖNERİLMEZ olarak sınıflandır.
+3. Kısa, anlaşılır ve Türkçe cevap ver.
+4. Kullanıcıya en mantıklı yemek seçimini öner.
+5. Cevabın sonunda bunun tıbbi tavsiye olmadığını belirt.
+"""
+
+    response = requests.post(
+        OLLAMA_URL,
+        json={
+            "model": OLLAMA_MODEL,
+            "prompt": prompt,
+            "stream": False
+        },
+        timeout=90
+    )
+
+    data = response.json()
+    return data.get("response", "Ollama cevap üretmedi.")
+
 def draw_chart(counts):
     canvas.delete("all")
 
     labels = ["UYGUN", "DİKKATLİ", "ÖNERİLMEZ"]
     values = [counts.get(label, 0) for label in labels]
-
     max_value = max(values) if max(values) > 0 else 1
 
     x_start = 60
@@ -61,9 +94,26 @@ def draw_chart(counts):
         x2 = x1 + bar_width
         y2 = y_base
 
-        canvas.create_rectangle(x1, y1, x2, y2, fill="#4F81BD")
+        color = "#2ECC71" if label == "UYGUN" else "#F1C40F" if label == "DİKKATLİ" else "#E74C3C"
+
+        canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="")
         canvas.create_text(x1 + 35, y1 - 12, text=str(value), font=("Arial", 11, "bold"))
-        canvas.create_text(x1 + 35, y_base + 20, text=label, font=("Arial", 9))
+        canvas.create_text(x1 + 35, y_base + 20, text=label, font=("Arial", 9, "bold"))
+
+def run_ollama_thread(menu, profile):
+    result_text.insert("end", "\n\nOllama AI Yorumu hazırlanıyor...\n")
+    root.update_idletasks()
+
+    try:
+        ai_answer = ask_ollama(menu, profile)
+        result_text.insert("end", "\n--- Ollama AI Yorumu ---\n")
+        result_text.insert("end", ai_answer)
+    except Exception:
+        result_text.insert("end", "\n\nOllama bağlantı hatası!\n")
+        result_text.insert("end", "Lütfen Ollama'nın açık olduğundan emin olun.\n")
+        result_text.insert("end", "Terminalde şu komutları çalıştırabilirsiniz:\n")
+        result_text.insert("end", "ollama pull llama3.2:1b\n")
+        result_text.insert("end", "ollama run llama3.2:1b\n")
 
 def analyze():
     for row in tree.get_children():
@@ -88,12 +138,12 @@ def analyze():
     draw_chart(counts)
 
     result_text.delete("1.0", "end")
-    result_text.insert("end", f"Profil: {profile.upper()}\n\n")
+    result_text.insert("end", f"Seçilen Sağlık Profili: {profile.upper()}\n\n")
     result_text.insert("end", f"Uygun yemek sayısı: {counts.get('UYGUN', 0)}\n")
     result_text.insert("end", f"Dikkatli tüketilecek yemek sayısı: {counts.get('DİKKATLİ', 0)}\n")
     result_text.insert("end", f"Önerilmeyen yemek sayısı: {counts.get('ÖNERİLMEZ', 0)}\n")
 
-    result_text.insert("end", "\nGenel Öneri:\n")
+    result_text.insert("end", "\nKural Tabanlı Genel Öneri:\n")
 
     if profile == "diyabet":
         result_text.insert("end", "Diyabet profili için tatlı, kola, pilav ve yüksek karbonhidratlı yiyeceklerden kaçınılmalıdır.\n")
@@ -107,33 +157,57 @@ def analyze():
 
     result_text.insert("end", "\nNot: Bu uygulama eğitim amaçlıdır. Tıbbi tavsiye yerine geçmez.")
 
+    threading.Thread(target=run_ollama_thread, args=(menu, profile), daemon=True).start()
+
 def clipboard_analyze(event=None):
     try:
         copied = root.clipboard_get()
+
+        if copied.strip() == "":
+            messagebox.showwarning("Uyarı", "Panoda metin bulunamadı.")
+            return
+
         text_box.delete("1.0", "end")
         text_box.insert("1.0", copied)
-        analyze()
-    except:
+        root.after(100, analyze)
+
+    except Exception:
         messagebox.showwarning("Uyarı", "Önce menü metnini seçip Ctrl+C yapınız.")
+
+def clear_all():
+    text_box.delete("1.0", "end")
+    result_text.delete("1.0", "end")
+    canvas.delete("all")
+    for row in tree.get_children():
+        tree.delete(row)
+
+def sample_menu():
+    text_box.delete("1.0", "end")
+    text_box.insert(
+        "1.0",
+        "Izgara Tavuk, Pilav, Baklava, Ayran, Kola, Salata, Mercimek Çorbası, Patates Kızartması, Balık, Yoğurt"
+    )
 
 root = tk.Tk()
 root.title(APP_TITLE)
-root.geometry("1050x720")
+root.geometry("1120x760")
 root.configure(bg="#f4f6f9")
 
 title = tk.Label(
     root,
     text=APP_TITLE,
-    font=("Arial", 22, "bold"),
-    bg="#f4f6f9"
+    font=("Arial", 24, "bold"),
+    bg="#f4f6f9",
+    fg="#1B2631"
 )
 title.pack(pady=15)
 
 info = tk.Label(
     root,
-    text="Menüyü yazın veya dışarıdan kopyalayıp uygulama açıkken F8 tuşuna basın.",
+    text="Menüyü yazın veya dışarıdan kopyalayıp uygulama açıkken F8 tuşuna basın. Sistem Ollama ile AI destekli analiz üretir.",
     font=("Arial", 11),
-    bg="#f4f6f9"
+    bg="#f4f6f9",
+    fg="#34495E"
 )
 info.pack()
 
@@ -141,41 +215,68 @@ profile_box = ttk.Combobox(
     root,
     values=["diyabet", "tansiyon", "diyet"],
     state="readonly",
-    width=25
+    width=30
 )
 profile_box.set("diyabet")
 profile_box.pack(pady=10)
 
-text_box = tk.Text(root, height=7, width=100, font=("Arial", 11))
+text_box = tk.Text(root, height=7, width=110, font=("Arial", 11))
 text_box.pack(pady=5)
-text_box.insert("1.0", "Izgara Tavuk, Pilav, Baklava, Ayran, Kola, Salata, Mercimek Çorbası, Patates Kızartması, Balık, Yoğurt")
+sample_menu()
 
-btn = tk.Button(
-    root,
+button_frame = tk.Frame(root, bg="#f4f6f9")
+button_frame.pack(pady=10)
+
+analyze_button = tk.Button(
+    button_frame,
     text="Analiz Et",
     command=analyze,
     font=("Arial", 12, "bold"),
     bg="#2E86C1",
     fg="white",
-    padx=20,
-    pady=6
+    padx=25,
+    pady=8
 )
-btn.pack(pady=10)
+analyze_button.pack(side="left", padx=8)
+
+sample_button = tk.Button(
+    button_frame,
+    text="Örnek Menü",
+    command=sample_menu,
+    font=("Arial", 11),
+    bg="#27AE60",
+    fg="white",
+    padx=20,
+    pady=8
+)
+sample_button.pack(side="left", padx=8)
+
+clear_button = tk.Button(
+    button_frame,
+    text="Temizle",
+    command=clear_all,
+    font=("Arial", 11),
+    bg="#C0392B",
+    fg="white",
+    padx=20,
+    pady=8
+)
+clear_button.pack(side="left", padx=8)
 
 middle_frame = tk.Frame(root, bg="#f4f6f9")
 middle_frame.pack(fill="both", expand=True, padx=20)
 
-tree = ttk.Treeview(middle_frame, columns=("Yemek", "Durum"), show="headings", height=12)
+tree = ttk.Treeview(middle_frame, columns=("Yemek", "Durum"), show="headings", height=13)
 tree.heading("Yemek", text="Yemek")
 tree.heading("Durum", text="Durum")
-tree.column("Yemek", width=330)
+tree.column("Yemek", width=360)
 tree.column("Durum", width=160)
 tree.pack(side="left", fill="both", expand=True, padx=10)
 
-canvas = tk.Canvas(middle_frame, width=420, height=270, bg="white")
+canvas = tk.Canvas(middle_frame, width=440, height=290, bg="white", highlightbackground="#BDC3C7")
 canvas.pack(side="right", padx=10)
 
-result_text = tk.Text(root, height=8, width=115, font=("Arial", 10))
+result_text = tk.Text(root, height=11, width=125, font=("Arial", 10))
 result_text.pack(pady=15)
 
 root.bind("<F8>", clipboard_analyze)
