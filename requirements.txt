@@ -1,7 +1,1 @@
-﻿requests
-pyperclip
-pynput
-pyautogui
-sympy
-Pillow
-PyMuPDF
+requests
