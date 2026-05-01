@@ -64,3 +64,16 @@ Kullanılan model:
 
 ```bash
 llama3.2:1b
+
+## Proje Özelliklerinin Gelişmiş Seviyesi
+
+Bu proje, klasik veri görselleştirme projelerinden farklı olarak:
+
+- Gerçek zamanlı kullanıcı etkileşimi sağlar
+- F8 ile metin yakalama (event-driven sistem)
+- Kural tabanlı veri analizi
+- Grafiksel veri görselleştirme (Canvas)
+- Ollama ile yerel yapay zekâ entegrasyonu
+- Çok katmanlı analiz (rule-based + AI-based)
+
+Bu yönüyle proje, hem veri analizi hem de yapay zekâ entegrasyonunu birleştiren hibrit bir sistemdir.
